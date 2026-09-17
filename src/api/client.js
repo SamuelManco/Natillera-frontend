@@ -1,6 +1,11 @@
 import axios from 'axios'
 
-// Cambia esta URL si tu backend corre en otro puerto o host.
+// Lee la variable de entorno o usa Render como respaldo
+const API_URL = 
+  import.meta.env?.VITE_API_URL || 
+  process.env?.REACT_APP_API_URL || 
+  'https://natillera-backend-1.onrender.com/api';
+
 export const client = axios.create({
-  baseURL: 'http://localhost:8080/api',
+  baseURL: API_URL,
 })
