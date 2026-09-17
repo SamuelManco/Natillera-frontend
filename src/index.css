@@ -1,0 +1,318 @@
+:root {
+  --paper: #f7f4ee;
+  --paper-line: #e3ddc9;
+  --ink: #1f2a24;
+  --ink-soft: #4d5850;
+  --green: #33544a;
+  --green-deep: #24392f;
+  --gold: #b8863b;
+  --gold-soft: #e8d3ab;
+  --brick: #a8452f;
+  --white: #fffdf9;
+
+  --font-display: 'Fraunces', serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--green-deep);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0;
+}
+
+.sidebar-brand {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  padding: 0 24px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  margin-bottom: 12px;
+}
+
+.sidebar-brand span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gold-soft);
+  margin-top: 4px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-link {
+  padding: 11px 24px;
+  color: rgba(255, 253, 249, 0.72);
+  text-decoration: none;
+  font-size: 14px;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+}
+
+.sidebar-link.active {
+  color: var(--white);
+  border-left-color: var(--gold);
+  background: rgba(255, 255, 255, 0.06);
+  font-weight: 500;
+}
+
+/* ---------- Main content ---------- */
+
+.main {
+  flex: 1;
+  padding: 40px 48px;
+  max-width: 980px;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.page-subtitle {
+  color: var(--ink-soft);
+  margin: 0 0 32px;
+  max-width: 60ch;
+}
+
+/* ---------- Ledger table ---------- */
+
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ledger thead th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink-soft);
+  font-size: 13px;
+  padding: 0 12px 10px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.ledger tbody td {
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--paper-line);
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.ledger tbody tr:hover {
+  background: rgba(184, 134, 59, 0.06);
+}
+
+.ledger .num {
+  font-family: var(--font-mono);
+  color: var(--ink-soft);
+}
+
+.ledger .actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.row-btn {
+  background: none;
+  border: none;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--green);
+}
+
+.row-btn:hover {
+  background: rgba(51, 84, 74, 0.1);
+}
+
+.row-btn.danger {
+  color: var(--brick);
+}
+
+.row-btn.danger:hover {
+  background: rgba(168, 69, 47, 0.1);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--green);
+  color: var(--white);
+}
+
+.btn:hover {
+  background: var(--green-deep);
+}
+
+.btn.secondary {
+  background: transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.btn.secondary:hover {
+  background: rgba(31, 42, 36, 0.06);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* ---------- Form panel ---------- */
+
+.panel {
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  padding: 24px 28px;
+  background: var(--white);
+  margin-bottom: 32px;
+  max-width: 560px;
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 20px;
+  margin: 0 0 20px;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #c9c2ac;
+  border-radius: 4px;
+  background: var(--paper);
+}
+
+.field-row {
+  display: flex;
+  gap: 16px;
+}
+
+.field-row .field {
+  flex: 1;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* ---------- States ---------- */
+
+.empty-state {
+  border: 1px dashed #c9c2ac;
+  border-radius: 6px;
+  padding: 40px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.banner {
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 13.5px;
+  margin-bottom: 18px;
+}
+
+.banner.error {
+  background: #f5e2db;
+  color: var(--brick);
+  border: 1px solid #e3b6a4;
+}
+
+.banner.loading {
+  color: var(--ink-soft);
+}
+
+.placeholder-page {
+  border: 1px dashed #c9c2ac;
+  border-radius: 6px;
+  padding: 48px;
+  color: var(--ink-soft);
+}
