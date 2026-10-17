@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { mensajeError } from '../api/errores'
 import { prestamosApi } from '../api/prestamos'
 import { personasApi } from '../api/personas'
 import { natillerasApi } from '../api/catalogos'
@@ -8,6 +9,7 @@ const emptyAbono = { montoAbonoCapital: '', fecha: '' }
 
 export default function PrestamosPage() {
   const [activos, setActivos] = useState([])
+  const [alertas, setAlertas] = useState([])
   const [personas, setPersonas] = useState([])
   const [natilleras, setNatilleras] = useState([])
   const [loading, setLoading] = useState(true)
@@ -34,8 +36,13 @@ export default function PrestamosPage() {
       setActivos(act)
       setPersonas(pers)
       setNatilleras(nats)
+      try {
+        setAlertas(await prestamosApi.alertas())
+      } catch (errAlertas) {
+        setAlertas([]) // si las alertas fallan, el resto de la pantalla sigue funcionando
+      }
     } catch (err) {
-      setError('No se pudo conectar con el backend.')
+      setError(mensajeError(err, 'No se pudo conectar con el backend.'))
     } finally {
       setLoading(false)
     }
@@ -70,7 +77,7 @@ export default function PrestamosPage() {
       setForm(emptyOtorgar)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo otorgar el préstamo. Revisa que exista el Tipo_Movimiento "Préstamo Otorgado".')
+      setError(mensajeError(err, 'No se pudo otorgar el préstamo. Revisa que exista el Tipo_Movimiento "Préstamo Otorgado".'))
     } finally {
       setSaving(false)
     }
@@ -83,7 +90,7 @@ export default function PrestamosPage() {
       const est = await prestamosApi.estado(id)
       setDetalle(est)
     } catch (err) {
-      setError('No se pudo cargar el detalle del préstamo.')
+      setError(mensajeError(err, 'No se pudo cargar el detalle del préstamo.'))
     }
   }
 
@@ -100,7 +107,7 @@ export default function PrestamosPage() {
       setAbonoForm(emptyAbono)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo registrar el abono. Revisa que existan los Tipo_Movimiento "Abono a Capital" e "Interés Préstamo".')
+      setError(mensajeError(err, 'No se pudo registrar el abono. Revisa que existan los Tipo_Movimiento "Abono a Capital" e "Interés Préstamo".'))
     } finally {
       setAbonando(false)
     }
@@ -112,6 +119,13 @@ export default function PrestamosPage() {
       <p className="page-subtitle">Otorgar préstamos a los miembros y registrar sus abonos.</p>
 
       {error && <div className="banner error">{error}</div>}
+
+      {alertas.map((a) => (
+        <div key={a.idPrestamo} className={'banner ' + (a.nivel === 'VENCIDO' ? 'error' : 'warn')}>
+          <strong>{a.nivel === 'VENCIDO' ? 'Plazo vencido: ' : 'Atención: '}</strong>
+          {a.mensaje}
+        </div>
+      ))}
 
       <div className="toolbar">
         <span className="banner loading">{loading ? 'Cargando...' : `${activos.length} préstamo(s) activo(s)`}</span>
@@ -203,6 +217,11 @@ export default function PrestamosPage() {
             Abonado: ${detalle.totalAbonadoCapital?.toLocaleString('es-CO')} · Interés pagado: ${detalle.totalInteresPagado?.toLocaleString('es-CO')}
             {detalle.pagadoCompleto ? ' · Pagado completo ✓' : ''}
           </p>
+          {detalle.fechaLimiteAbonos && !detalle.pagadoCompleto && (
+            <p className="page-subtitle" style={{ margin: '-8px 0 16px' }}>
+              Último día para abonar: <strong>{detalle.fechaLimiteAbonos}</strong>
+            </p>
+          )}
 
           {detalle.historial?.length > 0 && (
             <table className="ledger" style={{ marginBottom: 20 }}>

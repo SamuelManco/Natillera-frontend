@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { mensajeError } from '../api/errores'
 import { personasApi, rolesApi, tiposDocumentoApi } from '../api/personas'
 
 const emptyForm = {
@@ -39,7 +40,7 @@ export default function PersonasPage() {
       setTiposDocumento(td)
     } catch (err) {
       setError(
-        'No se pudo conectar con el backend. Revisa que esté corriendo en el puerto 8080 y que tenga CORS habilitado.'
+        mensajeError(err, 'No se pudo conectar con el backend. Revisa que esté corriendo y que tenga CORS habilitado.')
       )
     } finally {
       setLoading(false)
@@ -109,7 +110,7 @@ export default function PersonasPage() {
       cerrarForm()
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo guardar la persona. Revisa que todos los campos requeridos estén completos.')
+      setError(mensajeError(err, 'No se pudo guardar la persona. Revisa que todos los campos requeridos estén completos.'))
     } finally {
       setSaving(false)
     }
@@ -122,7 +123,7 @@ export default function PersonasPage() {
       await personasApi.eliminar(persona.id)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo eliminar. Puede que esta persona ya tenga movimientos asociados.')
+      setError(mensajeError(err, 'No se pudo eliminar. Puede que esta persona ya tenga movimientos asociados.'))
     }
   }
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { mensajeError } from '../api/errores'
 import { movimientosApi } from '../api/movimientos'
 import { personasApi } from '../api/personas'
 import { natillerasApi, tipoMovimientoApi } from '../api/catalogos'
@@ -33,7 +34,7 @@ export default function AportesPage() {
       setPersonas(pers)
       setNatilleras(nats)
     } catch (err) {
-      setError('No se pudo conectar con el backend. Revisa que esté corriendo y que tenga CORS habilitado.')
+      setError(mensajeError(err, 'No se pudo conectar con el backend. Revisa que esté corriendo y que tenga CORS habilitado.'))
     } finally {
       setLoading(false)
     }
@@ -50,6 +51,16 @@ export default function AportesPage() {
 
   function cambiarCampo(campo, valor) {
     setForm((prev) => ({ ...prev, [campo]: valor }))
+  }
+
+  // Al elegir un socio se propone su cuota mínima como monto
+  function elegirPersona(id) {
+    const p = personas.find((x) => String(x.id) === String(id))
+    setForm((prev) => ({
+      ...prev,
+      idPersona: id,
+      monto: prev.monto === '' && p?.cuotaMinima ? String(p.cuotaMinima) : prev.monto,
+    }))
   }
 
   function abrirNuevo() {
@@ -74,7 +85,7 @@ export default function AportesPage() {
       setForm(emptyForm)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo registrar el aporte. Revisa que los campos estén completos.')
+      setError(mensajeError(err, 'No se pudo registrar el aporte. Revisa que los campos estén completos.'))
     } finally {
       setSaving(false)
     }
@@ -87,9 +98,11 @@ export default function AportesPage() {
       await movimientosApi.eliminar(aporte.id)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo eliminar el aporte.')
+      setError(mensajeError(err, 'No se pudo eliminar el aporte.'))
     }
   }
+
+  const personaElegida = personas.find((x) => String(x.id) === String(form.idPersona))
 
   const faltaCatalogo = !loading && (tipoAporteId === null || personas.length === 0 || natilleras.length === 0)
 
@@ -133,7 +146,7 @@ export default function AportesPage() {
             </div>
             <div className="field">
               <label htmlFor="persona">Persona</label>
-              <select id="persona" required value={form.idPersona} onChange={(e) => cambiarCampo('idPersona', e.target.value)}>
+              <select id="persona" required value={form.idPersona} onChange={(e) => elegirPersona(e.target.value)}>
                 <option value="" disabled>Selecciona...</option>
                 {personas.map((p) => (
                   <option key={p.id} value={p.id}>{p.nombre} {p.apellido}</option>
@@ -145,7 +158,12 @@ export default function AportesPage() {
           <div className="field-row">
             <div className="field">
               <label htmlFor="monto">Monto</label>
-              <input id="monto" type="number" min="0" required value={form.monto} onChange={(e) => cambiarCampo('monto', e.target.value)} />
+              <input id="monto" type="number" min={personaElegida?.cuotaMinima || 0} required value={form.monto} onChange={(e) => cambiarCampo('monto', e.target.value)} />
+              {personaElegida?.cuotaMinima ? (
+                <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 4 }}>
+                  Cuota mínima de {personaElegida.nombre}: ${personaElegida.cuotaMinima.toLocaleString('es-CO')}
+                </div>
+              ) : null}
             </div>
             <div className="field">
               <label htmlFor="fecha">Fecha</label>

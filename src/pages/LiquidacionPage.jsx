@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { mensajeError } from '../api/errores'
 import { liquidacionesApi, liquidacionOperacionesApi } from '../api/liquidaciones'
 import { personasApi } from '../api/personas'
 import { natillerasApi, estadoApi } from '../api/catalogos'
@@ -29,7 +30,7 @@ export default function LiquidacionPage() {
       ])
       setLiquidaciones(liq); setPersonas(pers); setNatilleras(nats); setEstados(ests)
     } catch (err) {
-      setError('No se pudo conectar con el backend.')
+      setError(mensajeError(err, 'No se pudo conectar con el backend.'))
     } finally {
       setLoading(false)
     }
@@ -59,7 +60,7 @@ export default function LiquidacionPage() {
       setForm(emptyCierre)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo cerrar la liquidación. Revisa que haya aportes registrados en ese rango de fechas y que existan los Estado "Cerrada" y "Pendiente".')
+      setError(mensajeError(err, 'No se pudo cerrar la liquidación. Revisa que haya aportes registrados en ese rango de fechas y que existan los Estado "Cerrada" y "Pendiente".'))
     } finally {
       setCerrando(false)
     }
@@ -71,7 +72,7 @@ export default function LiquidacionPage() {
       const res = await liquidacionOperacionesApi.resumen(idLiquidacion)
       setResumen(res)
     } catch (err) {
-      setError('No se pudo cargar el resumen.')
+      setError(mensajeError(err, 'No se pudo cargar el resumen.'))
     }
   }
 
@@ -83,7 +84,7 @@ export default function LiquidacionPage() {
       await liquidacionOperacionesApi.pagar(idDetalle, { fecha })
       if (resumen) await verResumen(resumen.liquidacion.id)
     } catch (err) {
-      setError('No se pudo registrar el pago. Revisa que exista el Tipo_Movimiento "Pago Liquidación".')
+      setError(mensajeError(err, 'No se pudo registrar el pago. Revisa que exista el Tipo_Movimiento "Pago Liquidación".'))
     } finally {
       setPagandoId(null)
     }

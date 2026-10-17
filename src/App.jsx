@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
+import NatilleraPage from './pages/NatilleraPage'
 import PersonasPage from './pages/PersonasPage'
 import AportesPage from './pages/AportesPage'
 import PrestamosPage from './pages/PrestamosPage'
@@ -12,7 +13,8 @@ export default function App() {
       <Sidebar />
       <main className="main">
         <Routes>
-          <Route path="/" element={<Navigate to="/personas" replace />} />
+          <Route path="/" element={<Navigate to="/natillera" replace />} />
+          <Route path="/natillera" element={<NatilleraPage />} />
           <Route path="/personas" element={<PersonasPage />} />
           <Route path="/aportes" element={<AportesPage />} />
           <Route path="/prestamos" element={<PrestamosPage />} />

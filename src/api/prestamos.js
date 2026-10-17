@@ -5,4 +5,5 @@ export const prestamosApi = {
   abonar: (id, payload) => client.post(`/prestamos/${id}/abonar`, payload).then((res) => res.data),
   estado: (id) => client.get(`/prestamos/${id}/estado`).then((res) => res.data),
   activos: () => client.get('/prestamos/activos').then((res) => res.data),
+  alertas: () => client.get('/prestamos/alertas').then((res) => res.data),
 }

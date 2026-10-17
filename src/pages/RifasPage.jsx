@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { mensajeError } from '../api/errores'
 import { rifasApi, rifaOperacionesApi } from '../api/rifas'
 import { personasApi } from '../api/personas'
 import { natillerasApi, estadoApi } from '../api/catalogos'
@@ -36,7 +37,7 @@ export default function RifasPage() {
       ])
       setRifas(r); setPersonas(p); setNatilleras(n); setEstados(e)
     } catch (err) {
-      setError('No se pudo conectar con el backend.')
+      setError(mensajeError(err, 'No se pudo conectar con el backend.'))
     } finally {
       setLoading(false)
     }
@@ -74,7 +75,7 @@ export default function RifasPage() {
       setForm(emptyRifa)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo crear la rifa.')
+      setError(mensajeError(err, 'No se pudo crear la rifa.'))
     } finally {
       setSaving(false)
     }
@@ -90,7 +91,7 @@ export default function RifasPage() {
       setEstadoRifa(est)
       setBoletas(bol)
     } catch (err) {
-      setError('No se pudo cargar el detalle de la rifa.')
+      setError(mensajeError(err, 'No se pudo cargar el detalle de la rifa.'))
     }
   }
 
@@ -107,7 +108,7 @@ export default function RifasPage() {
       setBoletaForm(emptyBoleta)
       await abrirDetalle(detalleId)
     } catch (err) {
-      setError('No se pudo vender la boleta (¿número repetido, o ya no quedan disponibles?).')
+      setError(mensajeError(err, 'No se pudo vender la boleta (¿número repetido, o ya no quedan disponibles?).'))
     } finally {
       setAccionando(false)
     }
@@ -126,7 +127,7 @@ export default function RifasPage() {
       await abrirDetalle(detalleId)
       await cargarTodo()
     } catch (err) {
-      setError('No se pudo sortear la rifa. Revisa que existan los Tipo_Movimiento "Premio Rifa" e "Ingreso Rifa".')
+      setError(mensajeError(err, 'No se pudo sortear la rifa. Revisa que existan los Tipo_Movimiento "Premio Rifa" e "Ingreso Rifa".'))
     } finally {
       setAccionando(false)
     }
