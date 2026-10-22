@@ -1,9 +1,12 @@
-import axios from 'axios'
+﻿import axios from 'axios'
 
-// En producción (Vercel) define la variable VITE_API_URL con la URL del backend,
-// por ejemplo https://natillera-backend-1.onrender.com (sin "/" al final).
-// En local, si no existe, usa http://localhost:8080.
-const base = (import.meta.env.VITE_API_URL || 'http://localhost:8080')
+// URL del backend:
+// 1. Si existe la variable VITE_API_URL (archivo .env o Vercel), se usa esa.
+// 2. Si no, en la pagina desplegada (produccion) se usa el backend de Render.
+// 3. Si no, en tu computador (npm run dev) se usa http://localhost:8080.
+const BACKEND_PRODUCCION = 'https://natillera-backend-1.onrender.com'
+
+const base = (import.meta.env.VITE_API_URL || (import.meta.env.PROD ? BACKEND_PRODUCCION : 'http://localhost:8080'))
   .replace(/\/+$/, '')
   .replace(/\/api$/, '')
 
